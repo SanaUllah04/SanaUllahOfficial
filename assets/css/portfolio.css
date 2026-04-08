@@ -1158,15 +1158,11 @@ body::before {
 
 /* Response for Snake */
 @media (max-width: 992px) {
-    .exp-row { grid-template-columns: 1fr 1fr; --card-center: 25%; }
-    .exp-row .exp-card:last-child { display: none; } /* Show 2 on medium */
-}
-@media (max-width: 640px) {
     .exp-row { grid-template-columns: 1fr; }
     .exp-connector { display: none; }
     .exp-row-reverse { direction: ltr; }
     
-    /* Fallback to single straight line on mobile */
+    /* Fallback to single straight line on tablet and mobile */
     .exp-snake::before {
         content: '';
         position: absolute;
@@ -1181,6 +1177,20 @@ body::before {
     }
     .exp-row::before, .exp-row::after {
         display: none !important;
+    }
+}
+
+/* Mobile Performance & Smoothness Enhancements */
+@media (max-width: 640px) {
+    .exp-card, .project-card, .stat-card, .highlight-card, .cert-card, .about-text blockquote {
+        box-shadow: none !important;
+    }
+    .exp-card:hover, .project-card:hover, .stat-card:hover, .highlight-card:hover, .cert-card:hover {
+        transform: translateY(-2px) !important;
+    }
+    #navbar.scrolled {
+        backdrop-filter: blur(10px) saturate(100%);
+        -webkit-backdrop-filter: blur(10px) saturate(100%);
     }
 }
 
