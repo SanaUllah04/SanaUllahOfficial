@@ -18,7 +18,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Fira+Code:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap"
         rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     <link rel="stylesheet" href="assets/css/portfolio.css" />
@@ -26,13 +26,10 @@
 
 <body>
 
-    <!-- Cursor Spotlight -->
-    <div id="cursor-spotlight"></div>
-
     <!-- ========== NAVBAR ========== -->
     <header id="navbar">
         <div class="nav-container">
-            <a href="#hero" class="nav-logo">&lt;SanaUllah /&gt;</a>
+            <a href="#hero" class="nav-logo">SanaUllah</a>
             <button class="hamburger" id="hamburger" aria-label="Toggle menu">
                 <span></span><span></span><span></span>
             </button>
@@ -45,6 +42,10 @@
                 <a href="#highlights" class="nav-item">Highlights</a>
                 <a href="#contact" class="nav-item btn-resume">Contact</a>
             </nav>
+            <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">
+                <i class="fas fa-sun icon-sun"></i>
+                <i class="fas fa-moon icon-moon"></i>
+            </button>
         </div>
     </header>
 
@@ -55,7 +56,6 @@
 
     <!-- ========== HERO ========== -->
     <section id="hero">
-        <div class="hero-bg-grid"></div>
         <div class="hero-content">
             <div class="hero-avatar-wrap">
                 <img src="images/Home/mine.PNG" alt="SanaUllah" id="hero-avatar" />
@@ -1117,18 +1117,21 @@
     <button id="back-to-top" aria-label="Back to top"><i class="fas fa-arrow-up"></i></button>
 
     <script>
-        // ---- Cursor Spotlight ----
-        const spotlight = document.getElementById('cursor-spotlight');
-        let spotX = window.innerWidth / 2, spotY = window.innerHeight / 2;
-        let currX = spotX, currY = spotY;
-        document.addEventListener('mousemove', e => { spotX = e.clientX; spotY = e.clientY; });
-        (function animateSpotlight() {
-            currX += (spotX - currX) * 0.08;
-            currY += (spotY - currY) * 0.08;
-            spotlight.style.left = currX + 'px';
-            spotlight.style.top = currY + 'px';
-            requestAnimationFrame(animateSpotlight);
-        })();
+        // ---- Theme Toggle ----
+        const themeToggle = document.getElementById('theme-toggle');
+        const savedTheme = localStorage.getItem('theme');
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        if (savedTheme) {
+            document.documentElement.setAttribute('data-theme', savedTheme);
+        } else if (prefersDark) {
+            document.documentElement.setAttribute('data-theme', 'dark');
+        }
+        themeToggle.addEventListener('click', () => {
+            const current = document.documentElement.getAttribute('data-theme');
+            const next = current === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', next);
+            localStorage.setItem('theme', next);
+        });
 
         // ---- Typed text effect ----
         const roles = ["Full-Stack AI Engineer", "DevOps & Cloud Engineer", "CS Graduate"];
@@ -1229,57 +1232,6 @@
             const max = document.body.scrollHeight - window.innerHeight;
             progressBar.style.width = Math.min((scrolled / max) * 100, 100) + '%';
         });
-
-        // ---- Hero Particle Canvas ----
-        const hero = document.getElementById('hero');
-        const canvas = document.createElement('canvas');
-        canvas.id = 'hero-canvas';
-        canvas.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;opacity:0.5;';
-        hero.appendChild(canvas);
-
-        const ctx = canvas.getContext('2d');
-        let particles = [];
-
-        function resizeCanvas() {
-            canvas.width = hero.offsetWidth;
-            canvas.height = hero.offsetHeight;
-        }
-        resizeCanvas();
-        window.addEventListener('resize', resizeCanvas);
-
-        function Particle() {
-            this.x = Math.random() * canvas.width;
-            this.y = Math.random() * canvas.height;
-            this.size = Math.random() * 1.5 + 0.3;
-            this.speedX = (Math.random() - 0.5) * 0.3;
-            this.speedY = (Math.random() - 0.5) * 0.3;
-            this.opacity = Math.random() * 0.5 + 0.1;
-            this.color = Math.random() > 0.7 ? '188,140,255' : '88,166,255';
-        }
-
-        function initParticles() {
-            const count = Math.floor((canvas.width * canvas.height) / 14000);
-            particles = Array.from({ length: count }, () => new Particle());
-        }
-
-        function animateParticles() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            particles.forEach(p => {
-                ctx.beginPath();
-                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-                ctx.fillStyle = `rgba(${p.color},${p.opacity})`;
-                ctx.fill();
-                p.x += p.speedX;
-                p.y += p.speedY;
-                if (p.x < 0 || p.x > canvas.width) p.speedX *= -1;
-                if (p.y < 0 || p.y > canvas.height) p.speedY *= -1;
-            });
-            requestAnimationFrame(animateParticles);
-        }
-
-        initParticles();
-        animateParticles();
-        window.addEventListener('resize', initParticles);
 
         // ---- Highlight Carousels ----
         document.querySelectorAll('.hl-carousel').forEach(carousel => {
